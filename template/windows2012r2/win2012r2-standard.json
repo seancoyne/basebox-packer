@@ -2,7 +2,7 @@
   "variables": {
     "provisioner": "chef",
     "provisioner_version": "latest",
-    "iso_url": "../../iso/en_windows_server_2012_r2_x64_dvd_2707946.iso",
+    "iso_url": "/Users/sean/Downloads/SW_DVD5_NTRL_Windows_Svrs_2012_R2_English_FPP_OEM_Std_DC_X19-03239.iso",
     "iso_checksum": "b6f063436056510357cb19cb77db781ed9c11df3"
   },
   "builders": [
