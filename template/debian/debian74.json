@@ -2,25 +2,35 @@
   "variables": {
     "provisioner": "provisionerless",
     "provisioner_version": "",
-    "iso_url": "http://mirror.symnds.com/distributions/CentOS-vault/5.9/isos/i386/CentOS-5.9-i386-bin-DVD-1of2.iso",
-    "iso_checksum": "78f976b190ce44716eb672f71203df978474dfb4"
+    "iso_url": "http://cdimage.debian.org/cdimage/release/7.4.0/amd64/iso-dvd/debian-7.4.0-amd64-DVD-1.iso",
+    "iso_checksum": "f3aad259644d38244e5b9ba9b4b9c71fc8320e46",
+    "iso_checksum_type": "sha1"
   },
   "builders": [{
-    "vm_name": "centos59-i386",
+    "vm_name": "debian74",
     "type": "vmware-iso",
-    "guest_os_type": "centos",
+    "guest_os_type": "debian7-64",
     "http_directory": "http",
-    "iso_url": "{{ user `iso_url` }}",
-    "iso_checksum": "{{ user `iso_checksum` }}",
-    "iso_checksum_type": "sha1",
+    "iso_url": "{{user `iso_url`}}",
+    "iso_checksum": "{{user `iso_checksum`}}",
+    "iso_checksum_type": "{{user `iso_checksum_type`}}",
     "ssh_username": "vagrant",
     "ssh_password": "vagrant",
     "ssh_wait_timeout": "10000s",
     "tools_upload_flavor": "linux",
     "boot_command": [
-      "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort}}/ks5.cfg<enter>"
+      "<esc><wait>",
+      "install",
+      " auto",
+      " url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg",
+      " debian-installer=en_US",
+      " locale=en_US",
+      " keymap=us",
+      " netcfg/get_hostname=vagrant",
+      " netcfg/get_domain=vm ",
+      "<enter>"
     ],
-    "shutdown_command": "echo 'vagrant'|sudo -S /sbin/shutdown -h now",
+    "shutdown_command": "echo 'vagrant'|sudo -S shutdown -h now",
     "disk_size": 10140,
     "vmx_data": {
       "memsize": "512",
@@ -29,22 +39,31 @@
     }
   },
   {
-    "vm_name": "centos59-i386",
+    "vm_name": "debian74",
     "type": "virtualbox-iso",
     "http_directory": "http",
-    "iso_url": "{{ user `iso_url` }}",
-    "iso_checksum": "{{ user `iso_checksum` }}",
-    "iso_checksum_type": "sha1",
-    "guest_os_type": "RedHat",
+    "iso_url": "{{user `iso_url`}}",
+    "iso_checksum": "{{user `iso_checksum`}}",
+    "iso_checksum_type": "{{user `iso_checksum_type`}}",
+    "guest_os_type": "Debian_64",
     "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
     "virtualbox_version_file": ".vbox_version",
     "ssh_username": "vagrant",
     "ssh_password": "vagrant",
     "ssh_wait_timeout": "10000s",
     "boot_command": [
-      "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort}}/ks5.cfg<enter>"
+      "<esc><wait>",
+      "install",
+      " auto",
+      " url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg",
+      " debian-installer=en_US",
+      " locale=en_US",
+      " keymap=us",
+      " netcfg/get_hostname=vagrant",
+      " netcfg/get_domain=vm ",
+      "<enter>"
     ],
-    "shutdown_command": "echo 'vagrant'|sudo -S /sbin/shutdown -h now",
+    "shutdown_command": "echo 'vagrant'|sudo -S shutdown -h now",
     "disk_size": 10140,
     "vboxmanage": [
       ["modifyvm", "{{.Name}}", "--memory", "512"],
@@ -59,8 +78,7 @@
     ],
     "execute_command": "echo 'vagrant' | {{.Vars}} sudo -E -S bash '{{.Path}}'",
     "scripts": [
-      "script/fix-slow-dns.sh",
-      "script/sshd.sh",
+      "script/base.sh",
       "script/vagrant.sh",
       "script/vmtools.sh",
       "script/provisioner.sh",
@@ -71,6 +89,6 @@
   "post-processors": [{
     "type": "vagrant",
     "keep_input_artifact": false,
-    "output": "../../{{.Provider}}/centos59-i386-{{user `provisioner`}}{{user `provisioner_version`}}.box"
+    "output": "../../{{.Provider}}/debian74-{{user `provisioner`}}{{user `provisioner_version`}}.box"
   }]
 }
